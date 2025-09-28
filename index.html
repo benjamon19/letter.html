@@ -5,19 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>✉️</title>
     <style>
+        /* fondo suave y centrado todo */
         body {
             margin: 0;
             padding: 0;
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #e9ecef 100%);
             font-family: 'Georgia', serif;
             overflow: hidden;
-            touch-action: manipulation; /* Mejora la respuesta táctil */
+            touch-action: manipulation; /* mejora el toque en celu */
+            gap: 20px;
         }
 
+        /* partículas flotando al fondo */
         .particles {
             position: fixed;
             top: 0;
@@ -31,11 +35,11 @@
         .particle {
             position: absolute;
             background: radial-gradient(circle, 
-                rgba(255, 179, 186, 0.6) 0%, 
-                rgba(255, 138, 149, 0.3) 70%,
+                rgba(255, 179, 186, 0.5) 0%, 
+                rgba(255, 138, 149, 0.2) 70%,
                 transparent 100%);
             border-radius: 50%;
-            box-shadow: 0 0 8px rgba(255, 138, 149, 0.4);
+            box-shadow: 0 0 6px rgba(255, 138, 149, 0.3);
             animation: float-particle 20s infinite cubic-bezier(0.2, 0.8, 0.3, 1);
             opacity: 0;
         }
@@ -45,103 +49,104 @@
                 transform: translateY(100vh) translateX(0) scale(0);
                 opacity: 0;
             }
-            10% {
-                opacity: 0.7;
-            }
-            50% {
-                opacity: 0.5;
-            }
-            90% {
-                opacity: 0.2;
-            }
+            10% { opacity: 0.6; }
+            50% { opacity: 0.4; }
+            90% { opacity: 0.15; }
             100% {
-                transform: translateY(-20vh) translateX(calc((var(--offset, 0)) * 1px)) scale(0.8);
+                transform: translateY(-20vh) translateX(calc((var(--offset, 0)) * 1px)) scale(0.6);
                 opacity: 0;
             }
         }
 
-        /* Resto del estilo igual, solo ajustado para tamaño más pequeño */
+        /* contenedor del sobre (para la perspectiva 3D) */
         .letter-container {
             z-index: 2;
             position: relative;
-            perspective: 1000px;
+            perspective: 800px;
         }
 
+        /* estilo del sobre */
         .letter {
             position: relative;
-            width: 400px;
-            height: 260px;
+            width: 280px;
+            height: 180px;
             background: #fefefe;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
             transition: transform 0.3s ease;
             cursor: pointer;
             overflow: visible;
         }
 
         .letter:hover {
-            transform: translateY(-3px);
+            transform: translateY(-2px);
         }
 
+        /* cuerpo del sobre (la parte blanca) */
         .letter-body {
             width: 100%;
             height: 100%;
             background: #fefefe;
-            border-radius: 15px;
+            border-radius: 12px;
             position: relative;
             z-index: 2;
             border: 1px solid #f0f0f0;
         }
 
+        /* solapa del sobre */
         .envelope-flap {
             position: absolute;
             top: -1px;
             left: -1px;
             right: -1px;
-            height: 130px;
+            height: 90px;
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             clip-path: polygon(0 0, 100% 0, 50% 100%);
             z-index: 5;
             border: 1px solid #dee2e6;
             transform-origin: 50% 0%;
             transition: transform 0.8s ease;
-            border-radius: 15px 15px 0 0;
+            border-radius: 12px 12px 0 0;
         }
 
+        /* cuando está abierto, la solapa se da vuelta */
         .letter.open .envelope-flap {
             transform: rotateX(-180deg);
         }
 
+        /* decoración chiquita en la solapa */
         .flap-decoration {
             position: absolute;
-            top: 15px;
+            top: 10px;
             left: 50%;
             transform: translateX(-50%);
-            width: 60px;
-            height: 45px;
+            width: 40px;
+            height: 30px;
             background: radial-gradient(circle, #fff 25%, transparent 25%),
-                        radial-gradient(circle at 20px 15px, #e9ecef 15%, transparent 15%),
-                        radial-gradient(circle at 40px 15px, #e9ecef 15%, transparent 15%);
+                        radial-gradient(circle at 14px 10px, #e9ecef 15%, transparent 15%),
+                        radial-gradient(circle at 26px 10px, #e9ecef 15%, transparent 15%);
             border-radius: 50%;
             opacity: 0.5;
         }
 
+        /* sello de cera rojo */
         .wax-seal {
             position: absolute;
-            top: 65px;
+            top: 45px;
             left: 50%;
             transform: translateX(-50%);
-            width: 40px;
-            height: 40px;
+            width: 28px;
+            height: 28px;
             background: radial-gradient(circle, #ffb3ba 0%, #ff8a95 100%);
             border-radius: 50%;
-            box-shadow: inset 0 -4px 8px rgba(0, 0, 0, 0.2),
-                        0 4px 12px rgba(255, 179, 186, 0.4);
+            box-shadow: inset 0 -3px 6px rgba(0, 0, 0, 0.2),
+                        0 3px 8px rgba(255, 179, 186, 0.4);
             transition: transform 0.3s ease, opacity 0.3s ease;
         }
 
+        /* cuando se abre, el sello desaparece */
         .letter.open .wax-seal {
-            transform: translateX(-50%) scale(0.8);
+            transform: translateX(-50%) scale(0.7);
             opacity: 0;
         }
 
@@ -152,9 +157,10 @@
             left: 50%;
             transform: translate(-50%, -50%);
             color: #fff;
-            font-size: 18px;
+            font-size: 12px;
         }
 
+        /* textura de papel suave */
         .paper-texture {
             position: absolute;
             top: 0;
@@ -165,78 +171,58 @@
                 radial-gradient(circle at 15% 25%, rgba(255,179,186,0.03) 1px, transparent 1px),
                 radial-gradient(circle at 85% 75%, rgba(255,179,186,0.03) 1px, transparent 1px),
                 radial-gradient(circle at 45% 85%, rgba(255,179,186,0.02) 1px, transparent 1px);
-            background-size: 60px 60px, 80px 80px, 40px 40px;
+            background-size: 40px 40px, 50px 50px, 30px 30px;
             pointer-events: none;
-            border-radius: 15px;
+            border-radius: 12px;
         }
 
+        /* líneas de doblez */
         .fold-lines {
             position: absolute;
-            left: 20px;
-            right: 20px;
+            left: 14px;
+            right: 14px;
             height: 1px;
             background: linear-gradient(90deg, transparent, rgba(255,179,186,0.2), transparent);
         }
 
-        .fold-lines:nth-child(1) { top: 65px; }
-        .fold-lines:nth-child(2) { top: 130px; }
-        .fold-lines:nth-child(3) { top: 195px; }
+        .fold-lines:nth-child(1) { top: 45px; }
+        .fold-lines:nth-child(2) { top: 90px; }
+        .fold-lines:nth-child(3) { top: 135px; }
 
+        /* esquinas decorativas */
         .corner-decoration {
             position: absolute;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #ffb3ba;
+            width: 14px;
+            height: 14px;
+            border: 1.5px solid #ffb3ba;
             opacity: 0.3;
         }
 
-        .corner-decoration:nth-child(5) { 
-            top: 15px; 
-            left: 15px; 
-            border-right: none; 
-            border-bottom: none; 
-            border-radius: 12px 0 0 0;
-        }
-        .corner-decoration:nth-child(6) { 
-            top: 15px; 
-            right: 15px; 
-            border-left: none; 
-            border-bottom: none; 
-            border-radius: 0 12px 0 0;
-        }
-        .corner-decoration:nth-child(7) { 
-            bottom: 15px; 
-            left: 15px; 
-            border-right: none; 
-            border-top: none; 
-            border-radius: 0 0 0 12px;
-        }
-        .corner-decoration:nth-child(8) { 
-            bottom: 15px; 
-            right: 15px; 
-            border-left: none; 
-            border-top: none; 
-            border-radius: 0 0 12px 0;
-        }
+        .corner-decoration:nth-child(5) { top: 10px; left: 10px; border-right: none; border-bottom: none; border-radius: 8px 0 0 0; }
+        .corner-decoration:nth-child(6) { top: 10px; right: 10px; border-left: none; border-bottom: none; border-radius: 0 8px 0 0; }
+        .corner-decoration:nth-child(7) { bottom: 10px; left: 10px; border-right: none; border-top: none; border-radius: 0 0 0 8px; }
+        .corner-decoration:nth-child(8) { bottom: 10px; right: 10px; border-left: none; border-top: none; border-radius: 0 0 8px 0; }
 
+        /* mensaje que aparece al abrir */
         .message {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0) rotateX(90deg);
-            width: 360px;
-            height: 420px;
+            width: 250px;
+            height: 300px;
             opacity: 0;
             transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             z-index: 10;
             background: linear-gradient(to bottom, #ffffff 0%, #fdfefe 100%);
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25),
-                        0 5px 15px rgba(0, 0, 0, 0.15);
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2),
+                        0 4px 10px rgba(0, 0, 0, 0.12);
             border: 1px solid #f0f0f0;
         }
 
+        /* líneas horizontales suaves en el mensaje */
         .message::before {
             content: '';
             position: absolute;
@@ -248,22 +234,23 @@
                 repeating-linear-gradient(
                     0deg,
                     transparent,
-                    transparent 30px,
-                    rgba(255, 179, 186, 0.05) 30px,
-                    rgba(255, 179, 186, 0.05) 31px
+                    transparent 24px,
+                    rgba(255, 179, 186, 0.05) 24px,
+                    rgba(255, 179, 186, 0.05) 25px
                 );
             pointer-events: none;
-            border-radius: 8px;
+            border-radius: 6px;
         }
 
+        /* sombra suave arriba del mensaje */
         .message::after {
             content: '';
             position: absolute;
-            top: -10px;
+            top: -8px;
             left: 50%;
             transform: translateX(-50%);
-            width: 50px;
-            height: 16px;
+            width: 36px;
+            height: 12px;
             background: linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(255,255,255,0));
             border-radius: 50%;
             opacity: 0.6;
@@ -281,26 +268,26 @@
 
         .message h2 {
             color: #2c3e50;
-            font-size: 24px;
-            margin-bottom: 18px;
+            font-size: 18px;
+            margin-bottom: 12px;
             font-weight: 300;
-            letter-spacing: 1.5px;
+            letter-spacing: 1px;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
         }
 
         .message p {
             color: #5a6c7d;
-            font-size: 16px;
-            line-height: 1.7;
-            margin-bottom: 25px;
-            max-width: 320px;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            max-width: 220px;
         }
 
         .message .signature {
             color: #ff8a95;
             font-style: italic;
-            font-size: 18px;
-            margin-top: 20px;
+            font-size: 14px;
+            margin-top: 15px;
             animation: pulse 2s ease-in-out infinite;
         }
 
@@ -309,11 +296,13 @@
             50% { transform: scale(1.05); }
         }
 
+        /* animación del mensaje al abrir */
         .letter.open .message {
-            transform: translate(-50%, -50%) scale(1) rotateX(0deg) translateY(-30px);
+            transform: translate(-50%, -50%) scale(1) rotateX(0deg) translateY(-20px);
             opacity: 1;
         }
 
+        /* corazones flotando dentro del mensaje */
         .decorative-hearts {
             position: absolute;
             width: 100%;
@@ -326,7 +315,7 @@
             position: absolute;
             color: rgba(255, 138, 149, 0.3);
             animation: heartFloat 4s ease-in-out infinite;
-            font-size: 18px;
+            font-size: 12px;
         }
 
         .heart-float:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
@@ -335,13 +324,33 @@
 
         @keyframes heartFloat {
             0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(5deg); }
+            50% { transform: translateY(-8px) rotate(5deg); }
+        }
+
+        /* texto de instrucción abajo */
+        .hint {
+            color: #888;
+            font-size: 14px;
+            font-style: italic;
+            text-align: center;
+            z-index: 2;
+            user-select: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        /* clase para esconderlo suave */
+        .hint.hidden {
+            opacity: 0;
+            transform: translateY(10px);
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
+    <!-- partículas de fondo -->
     <div class="particles" id="particles"></div>
     
+    <!-- sobre interactivo -->
     <div class="letter-container">
         <div class="letter" id="letter">
             <div class="envelope-flap">
@@ -361,6 +370,7 @@
                 <div class="corner-decoration"></div>
             </div>
 
+            <!-- mensaje que se muestra al abrir -->
             <div class="message">
                 <div class="decorative-hearts">
                     <span class="heart-float">♥</span>
@@ -369,72 +379,82 @@
                 </div>
                 <div class="message-content">
                     <h2>holaaaa</h2>
-                    sé q estas enojada y si de vdd te hice sentir mal o algo perdón, ya te lo he dicho pero me interesas mucho, te encuentro ultra linda tu personalidad es bakan<br><br>
+                    <p>sé q estas enojada y si de vdd te hice sentir mal o algo perdón, ya te lo he dicho pero me interesas mucho, te encuentro ultra linda y tu personalidad la encuentro bakan<br><br>
                     no quiero q se quede asi la vdd x eso te hago esto akdjwal</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- texto de ayuda abajo -->
+    <div class="hint" id="hint">Presiona para abrir</div>
+
     <script>
+        // agarro los elementos que voy a usar
         const letter = document.getElementById('letter');
+        const hint = document.getElementById('hint');
         let isOpen = false;
 
-        // Soporte táctil: aseguramos que funcione en móviles
+        // cuando hago clic en el sobre
         letter.addEventListener('click', function() {
             if (!isOpen) {
+                // lo abro
                 letter.classList.add('open');
                 isOpen = true;
+                // y escondo el texto de "presiona para abrir"
+                hint.classList.add('hidden');
             } else {
+                // si ya está abierto, lo cierro
                 letter.classList.remove('open');
                 isOpen = false;
+                // (opcional) si quisiera que el texto volviera a aparecer al cerrar, haría:
+                // hint.classList.remove('hidden');
+                // pero mejor dejarlo escondido después de la primera vez
             }
         });
 
-        // Partículas mejoradas
+        // --- partículas suaves de fondo ---
         function createParticles() {
             const particlesContainer = document.getElementById('particles');
-            const total = 20; // Menos partículas, más elegantes
+            const total = 15;
 
             for (let i = 0; i < total; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
                 
-                const size = Math.random() * 10 + 6; // Entre 6px y 16px
+                const size = Math.random() * 6 + 4; // entre 4 y 10px
                 const left = Math.random() * 100;
-                const animationDuration = Math.random() * 10 + 18; // 18-28s
-                const offset = (Math.random() - 0.5) * 200; // Movimiento lateral suave
+                const animationDuration = Math.random() * 8 + 16; // 16-24s
+                const offset = (Math.random() - 0.5) * 120; // movimiento lateral
 
                 particle.style.width = `${size}px`;
                 particle.style.height = `${size}px`;
                 particle.style.left = `${left}%`;
                 particle.style.animationDuration = `${animationDuration}s`;
                 particle.style.setProperty('--offset', offset);
-                particle.style.opacity = '0';
 
                 particlesContainer.appendChild(particle);
 
-                // Pequeño retraso para que no aparezcan todas al mismo tiempo
+                // aparecen con un pequeño retraso para no saturar
                 setTimeout(() => {
                     if (particle.parentNode) {
-                        particle.style.opacity = Math.random() * 0.6 + 0.3;
+                        particle.style.opacity = Math.random() * 0.5 + 0.2;
                     }
-                }, Math.random() * 2000);
+                }, Math.random() * 1500);
             }
         }
 
-        // No necesitamos partículas continuas si ya son suaves
-        // Pero si quieres, puedes mantener un ligero refresco
+        // agrega partículas nuevas de vez en cuando para que no se acaben
         function refreshParticles() {
             const container = document.getElementById('particles');
-            if (container.children.length < 25) {
+            if (container.children.length < 20) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
                 
-                const size = Math.random() * 8 + 5;
+                const size = Math.random() * 5 + 3;
                 const left = Math.random() * 100;
-                const duration = Math.random() * 8 + 20;
-                const offset = (Math.random() - 0.5) * 150;
+                const duration = Math.random() * 6 + 18;
+                const offset = (Math.random() - 0.5) * 100;
 
                 particle.style.width = `${size}px`;
                 particle.style.height = `${size}px`;
@@ -445,17 +465,19 @@
                 container.appendChild(particle);
 
                 setTimeout(() => {
-                    particle.style.opacity = Math.random() * 0.5 + 0.3;
+                    particle.style.opacity = Math.random() * 0.4 + 0.2;
                 }, 100);
 
+                // la elimino después de que termine su animación
                 setTimeout(() => {
                     particle.remove();
                 }, duration * 1000);
             }
         }
 
+        // inicio las partículas
         createParticles();
-        setInterval(refreshParticles, 3000);
+        setInterval(refreshParticles, 4000);
     </script>
 </body>
 </html>
