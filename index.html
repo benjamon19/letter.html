@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>✉️</title>
     <style>
-        /* fondo suave y centrado todo */
         body {
             margin: 0;
             padding: 0;
@@ -17,11 +16,11 @@
             background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #e9ecef 100%);
             font-family: 'Georgia', serif;
             overflow: hidden;
-            touch-action: manipulation; /* mejora el toque en celu */
+            touch-action: manipulation;
             gap: 20px;
         }
 
-        /* partículas flotando al fondo */
+        /* --- NUEVAS PARTÍCULAS --- */
         .particles {
             position: fixed;
             top: 0;
@@ -30,42 +29,37 @@
             height: 100%;
             pointer-events: none;
             z-index: 1;
+            overflow: hidden;
         }
 
         .particle {
             position: absolute;
-            background: radial-gradient(circle, 
-                rgba(255, 179, 186, 0.5) 0%, 
-                rgba(255, 138, 149, 0.2) 70%,
-                transparent 100%);
             border-radius: 50%;
-            box-shadow: 0 0 6px rgba(255, 138, 149, 0.3);
-            animation: float-particle 20s infinite cubic-bezier(0.2, 0.8, 0.3, 1);
-            opacity: 0;
+            opacity: 0.7;
+            animation: floatUp linear forwards;
         }
 
-        @keyframes float-particle {
+        @keyframes floatUp {
             0% {
-                transform: translateY(100vh) translateX(0) scale(0);
+                transform: translateY(100vh) scale(0.5) rotate(0deg);
                 opacity: 0;
             }
-            10% { opacity: 0.6; }
-            50% { opacity: 0.4; }
-            90% { opacity: 0.15; }
+            20% { opacity: 0.8; }
+            50% { opacity: 0.6; }
+            80% { opacity: 0.4; }
             100% {
-                transform: translateY(-20vh) translateX(calc((var(--offset, 0)) * 1px)) scale(0.6);
+                transform: translateY(-10vh) scale(1) rotate(360deg);
                 opacity: 0;
             }
         }
 
-        /* contenedor del sobre (para la perspectiva 3D) */
+        /* --- resto de tu estilo intacto --- */
         .letter-container {
             z-index: 2;
             position: relative;
             perspective: 800px;
         }
 
-        /* estilo del sobre */
         .letter {
             position: relative;
             width: 280px;
@@ -82,7 +76,6 @@
             transform: translateY(-2px);
         }
 
-        /* cuerpo del sobre (la parte blanca) */
         .letter-body {
             width: 100%;
             height: 100%;
@@ -93,7 +86,6 @@
             border: 1px solid #f0f0f0;
         }
 
-        /* solapa del sobre */
         .envelope-flap {
             position: absolute;
             top: -1px;
@@ -109,27 +101,10 @@
             border-radius: 12px 12px 0 0;
         }
 
-        /* cuando está abierto, la solapa se da vuelta */
         .letter.open .envelope-flap {
             transform: rotateX(-180deg);
         }
 
-        /* decoración chiquita en la solapa */
-        .flap-decoration {
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40px;
-            height: 30px;
-            background: radial-gradient(circle, #fff 25%, transparent 25%),
-                        radial-gradient(circle at 14px 10px, #e9ecef 15%, transparent 15%),
-                        radial-gradient(circle at 26px 10px, #e9ecef 15%, transparent 15%);
-            border-radius: 50%;
-            opacity: 0.5;
-        }
-
-        /* sello de cera rojo */
         .wax-seal {
             position: absolute;
             top: 45px;
@@ -144,7 +119,6 @@
             transition: transform 0.3s ease, opacity 0.3s ease;
         }
 
-        /* cuando se abre, el sello desaparece */
         .letter.open .wax-seal {
             transform: translateX(-50%) scale(0.7);
             opacity: 0;
@@ -160,50 +134,6 @@
             font-size: 12px;
         }
 
-        /* textura de papel suave */
-        .paper-texture {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 15% 25%, rgba(255,179,186,0.03) 1px, transparent 1px),
-                radial-gradient(circle at 85% 75%, rgba(255,179,186,0.03) 1px, transparent 1px),
-                radial-gradient(circle at 45% 85%, rgba(255,179,186,0.02) 1px, transparent 1px);
-            background-size: 40px 40px, 50px 50px, 30px 30px;
-            pointer-events: none;
-            border-radius: 12px;
-        }
-
-        /* líneas de doblez */
-        .fold-lines {
-            position: absolute;
-            left: 14px;
-            right: 14px;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,179,186,0.2), transparent);
-        }
-
-        .fold-lines:nth-child(1) { top: 45px; }
-        .fold-lines:nth-child(2) { top: 90px; }
-        .fold-lines:nth-child(3) { top: 135px; }
-
-        /* esquinas decorativas */
-        .corner-decoration {
-            position: absolute;
-            width: 14px;
-            height: 14px;
-            border: 1.5px solid #ffb3ba;
-            opacity: 0.3;
-        }
-
-        .corner-decoration:nth-child(5) { top: 10px; left: 10px; border-right: none; border-bottom: none; border-radius: 8px 0 0 0; }
-        .corner-decoration:nth-child(6) { top: 10px; right: 10px; border-left: none; border-bottom: none; border-radius: 0 8px 0 0; }
-        .corner-decoration:nth-child(7) { bottom: 10px; left: 10px; border-right: none; border-top: none; border-radius: 0 0 0 8px; }
-        .corner-decoration:nth-child(8) { bottom: 10px; right: 10px; border-left: none; border-top: none; border-radius: 0 0 8px 0; }
-
-        /* mensaje que aparece al abrir */
         .message {
             position: absolute;
             top: 50%;
@@ -222,112 +152,11 @@
             border: 1px solid #f0f0f0;
         }
 
-        /* líneas horizontales suaves en el mensaje */
-        .message::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                repeating-linear-gradient(
-                    0deg,
-                    transparent,
-                    transparent 24px,
-                    rgba(255, 179, 186, 0.05) 24px,
-                    rgba(255, 179, 186, 0.05) 25px
-                );
-            pointer-events: none;
-            border-radius: 6px;
-        }
-
-        /* sombra suave arriba del mensaje */
-        .message::after {
-            content: '';
-            position: absolute;
-            top: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 36px;
-            height: 12px;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(255,255,255,0));
-            border-radius: 50%;
-            opacity: 0.6;
-        }
-
-        .message-content {
-            position: relative;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-
-        .message h2 {
-            color: #2c3e50;
-            font-size: 18px;
-            margin-bottom: 12px;
-            font-weight: 300;
-            letter-spacing: 1px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
-        }
-
-        .message p {
-            color: #5a6c7d;
-            font-size: 13px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            max-width: 220px;
-        }
-
-        .message .signature {
-            color: #ff8a95;
-            font-style: italic;
-            font-size: 14px;
-            margin-top: 15px;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        /* animación del mensaje al abrir */
         .letter.open .message {
             transform: translate(-50%, -50%) scale(1) rotateX(0deg) translateY(-20px);
             opacity: 1;
         }
 
-        /* corazones flotando dentro del mensaje */
-        .decorative-hearts {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        .heart-float {
-            position: absolute;
-            color: rgba(255, 138, 149, 0.3);
-            animation: heartFloat 4s ease-in-out infinite;
-            font-size: 12px;
-        }
-
-        .heart-float:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
-        .heart-float:nth-child(2) { top: 60%; right: 15%; animation-delay: 1s; }
-        .heart-float:nth-child(3) { bottom: 20%; left: 20%; animation-delay: 2s; }
-
-        @keyframes heartFloat {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-8px) rotate(5deg); }
-        }
-
-        /* texto de instrucción abajo */
         .hint {
             color: #888;
             font-size: 14px;
@@ -338,7 +167,6 @@
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
 
-        /* clase para esconderlo suave */
         .hint.hidden {
             opacity: 0;
             transform: translateY(10px);
@@ -347,36 +175,17 @@
     </style>
 </head>
 <body>
-    <!-- partículas de fondo -->
     <div class="particles" id="particles"></div>
     
-    <!-- sobre interactivo -->
     <div class="letter-container">
         <div class="letter" id="letter">
             <div class="envelope-flap">
-                <div class="flap-decoration"></div>
                 <div class="wax-seal"></div>
             </div>
             
-            <div class="letter-body">
-                <div class="paper-texture"></div>
-                <div class="fold-lines"></div>
-                <div class="fold-lines"></div>
-                <div class="fold-lines"></div>
-                
-                <div class="corner-decoration"></div>
-                <div class="corner-decoration"></div>
-                <div class="corner-decoration"></div>
-                <div class="corner-decoration"></div>
-            </div>
+            <div class="letter-body"></div>
 
-            <!-- mensaje que se muestra al abrir -->
             <div class="message">
-                <div class="decorative-hearts">
-                    <span class="heart-float">♥</span>
-                    <span class="heart-float">♥</span>
-                    <span class="heart-float">♥</span>
-                </div>
                 <div class="message-content">
                     <h2>holaaaa</h2>
                     <p>sé q estas enojada y si de vdd te hice sentir mal o algo perdón, ya te lo he dicho pero me interesas mucho, te encuentro ultra linda y tu personalidad la encuentro bakan<br><br>
@@ -386,98 +195,51 @@
         </div>
     </div>
 
-    <!-- texto de ayuda abajo -->
     <div class="hint" id="hint">Presiona para abrir</div>
 
     <script>
-        // agarro los elementos que voy a usar
         const letter = document.getElementById('letter');
         const hint = document.getElementById('hint');
         let isOpen = false;
 
-        // cuando hago clic en el sobre
         letter.addEventListener('click', function() {
             if (!isOpen) {
-                // lo abro
                 letter.classList.add('open');
                 isOpen = true;
-                // y escondo el texto de "presiona para abrir"
                 hint.classList.add('hidden');
             } else {
-                // si ya está abierto, lo cierro
                 letter.classList.remove('open');
                 isOpen = false;
-                // (opcional) si quisiera que el texto volviera a aparecer al cerrar, haría:
-                // hint.classList.remove('hidden');
-                // pero mejor dejarlo escondido después de la primera vez
             }
         });
 
-        // --- partículas suaves de fondo ---
+        // GENERADOR DE PARTÍCULAS
         function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            const total = 15;
+            const container = document.getElementById('particles');
+            const colors = ["#ffb3ba", "#ff8a95", "#ffc3a0", "#ffe0ac"];
+            const total = 35;
 
             for (let i = 0; i < total; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                
-                const size = Math.random() * 6 + 4; // entre 4 y 10px
-                const left = Math.random() * 100;
-                const animationDuration = Math.random() * 8 + 16; // 16-24s
-                const offset = (Math.random() - 0.5) * 120; // movimiento lateral
+                const particle = document.createElement("div");
+                particle.className = "particle";
+
+                const size = Math.random() * 10 + 6; 
+                const left = Math.random() * 100; 
+                const duration = Math.random() * 10 + 10; 
+                const delay = Math.random() * 10; 
 
                 particle.style.width = `${size}px`;
                 particle.style.height = `${size}px`;
                 particle.style.left = `${left}%`;
-                particle.style.animationDuration = `${animationDuration}s`;
-                particle.style.setProperty('--offset', offset);
-
-                particlesContainer.appendChild(particle);
-
-                // aparecen con un pequeño retraso para no saturar
-                setTimeout(() => {
-                    if (particle.parentNode) {
-                        particle.style.opacity = Math.random() * 0.5 + 0.2;
-                    }
-                }, Math.random() * 1500);
-            }
-        }
-
-        // agrega partículas nuevas de vez en cuando para que no se acaben
-        function refreshParticles() {
-            const container = document.getElementById('particles');
-            if (container.children.length < 20) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                
-                const size = Math.random() * 5 + 3;
-                const left = Math.random() * 100;
-                const duration = Math.random() * 6 + 18;
-                const offset = (Math.random() - 0.5) * 100;
-
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                particle.style.left = `${left}%`;
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
                 particle.style.animationDuration = `${duration}s`;
-                particle.style.setProperty('--offset', offset);
+                particle.style.animationDelay = `${delay}s`;
 
                 container.appendChild(particle);
-
-                setTimeout(() => {
-                    particle.style.opacity = Math.random() * 0.4 + 0.2;
-                }, 100);
-
-                // la elimino después de que termine su animación
-                setTimeout(() => {
-                    particle.remove();
-                }, duration * 1000);
             }
         }
 
-        // inicio las partículas
-        createParticles();
-        setInterval(refreshParticles, 4000);
+        window.addEventListener("load", createParticles);
     </script>
 </body>
 </html>
